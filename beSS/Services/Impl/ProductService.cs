@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using beSS.Models;
@@ -18,21 +19,11 @@ namespace beSS.Services.Impl
             _context = context;
         }
 
-        public List<string> Brand()// 1 2 3 2 8 8 3 4 4 5 1
+        public List<string> Brand()// 1 1 2 3 2 8 8 3 4 4 5 1
         {
-            var listBrand = _context.Products
-                .Select(p => p.Brand).ToList();
-            for (int i = 0; i < listBrand.Count; i++)
-            {
-                for (int j = i+1; j < listBrand.Count; j++)
-                {
-                    if (listBrand[i] == listBrand[j])
-                    {
-                        listBrand.Remove(listBrand[j]);
-                    }
-                }
-            }
-            return listBrand;
+            var listBrand = _context.Products.Select(x => x.Brand).ToList();
+            var listDistinct = listBrand.Distinct().ToList();
+            return listDistinct;
         }
 
         public List<ProductResponse> GetProduct()
@@ -50,7 +41,10 @@ namespace beSS.Services.Impl
                     Size = p.Size,
                     Brand = p.Brand,
                     CategoryIDs = p.CategoryIDs,
-                    Categorys = p.Categories
+                    Categorys = p.Categories,
+                    DateAdded = p.DateAdded.ToString("dd/M/yyyy", CultureInfo.InvariantCulture),
+                    TypeProduct = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).Name,
+                    TypeProductID = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).ID,
                 }).ToList();
             return listProduct;
         }
@@ -70,7 +64,10 @@ namespace beSS.Services.Impl
                     DisplayPrice = p.Price.ToString("#,## VNĐ"),
                     Size = p.Size,
                     Brand = p.Brand,
-                    Categorys = p.Categories
+                    Categorys = p.Categories,
+                    DateAdded = p.DateAdded.ToString("dd/M/yyyy", CultureInfo.InvariantCulture),
+                    TypeProduct = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).Name,
+                    TypeProductID = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).ID,
                 }).ToList();
             return listProduct;
         }
@@ -90,7 +87,10 @@ namespace beSS.Services.Impl
                 DisplayPrice = p.Price.ToString("#,## VNĐ"),
                 Size = p.Size,
                 Brand = p.Brand,
-                Categorys = p.Categories
+                Categorys = p.Categories,
+                DateAdded = p.DateAdded.ToString("dd/M/yyyy", CultureInfo.InvariantCulture),
+                TypeProduct = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).Name,
+                TypeProductID = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).ID,
             }).ToList();
             return listProduct;
         }
@@ -108,6 +108,11 @@ namespace beSS.Services.Impl
                 }
                 listCategory.Add(targetCategory);
             });
+            var typeProduct = _context.TypeProducts.FirstOrDefault(x => x.ID == request.TypeProductID);
+            if (typeProduct == null)
+            {
+                throw new Exception("Not found this type");
+            }
             var newProduct = new Product()
             {
                 ProductID = Guid.NewGuid(),
@@ -119,7 +124,9 @@ namespace beSS.Services.Impl
                 Size = request.Size,
                 Brand = request.Brand,
                 CategoryIDs = request.CategoryIDs,
-                Categories = listCategory
+                Categories = listCategory,
+                DateAdded = DateTime.UtcNow,
+                TypeProductID = typeProduct.ID
             };
             _context.Add(newProduct);
             _context.SaveChanges();
@@ -166,7 +173,10 @@ namespace beSS.Services.Impl
                     DisplayPrice = p.Price.ToString("#,## VND"),
                     Size = p.Size,
                     Brand = p.Brand,
-                    Categorys = p.Categories
+                    Categorys = p.Categories,
+                    DateAdded = p.DateAdded.ToString("dd/M/yyyy", CultureInfo.InvariantCulture),
+                    TypeProduct = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).Name,
+                    TypeProductID = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).ID,
                 }).ToList();
             return listProduct;
         }
@@ -178,6 +188,8 @@ namespace beSS.Services.Impl
             {
                 throw new Exception("Không tìm thấy sản phẩm");
             }
+
+            var targetType = _context.TypeProducts.FirstOrDefault(x => x.ID == request.TypeID);
 
             var listCategory = new List<Category>();
             foreach (var id in request.CategorieIDs)
@@ -198,6 +210,7 @@ namespace beSS.Services.Impl
             targetProduct.Size = request.Size;
             targetProduct.Brand = request.Brand;
             targetProduct.CategoryIDs = request.CategorieIDs;
+            targetProduct.TypeProductID = request.TypeID;
             
             await _context.SaveChangesAsync();
             return new ProductResponse()
@@ -209,8 +222,39 @@ namespace beSS.Services.Impl
                 QuantityAvailable = targetProduct.QuantityAvailable,
                 Price = targetProduct.Price,
                 Brand = targetProduct.Brand,
-                Categorys = listCategory
+                Categorys = listCategory,
+                DateAdded = targetProduct.DateAdded.ToString("dd/M/yyyy", CultureInfo.InvariantCulture),
+                TypeProduct = targetType.Name,
+                TypeProductID = targetType.ID,
             };
         }
+
+        public List<ProductResponse> GetProductByType(Guid ID)
+        {
+            var listProductResponse = new List<ProductResponse>();
+            var listProduct = _context.Products.Where(x=>x.TypeProductID == ID).Select(x=>x).ToList();
+            foreach (var p in listProduct)
+            {
+                var productResponse = new ProductResponse()
+                {
+                    ProductID = p.ProductID,
+                    Name = p.Name,
+                    Description = p.Description,
+                    ImageURL = p.ImageURL,
+                    QuantityAvailable = p.QuantityAvailable,
+                    Price = p.Price,
+                    DisplayPrice = p.Price.ToString("#,## VND"),
+                    Size = p.Size,
+                    Brand = p.Brand,
+                    Categorys = p.Categories,
+                    DateAdded = p.DateAdded.ToString("dd/M/yyyy", CultureInfo.InvariantCulture),
+                    TypeProduct = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).Name,
+                    TypeProductID = _context.TypeProducts.FirstOrDefault(x=>x.ID == p.TypeProductID).ID,
+                };
+                listProductResponse.Add(productResponse);
+            }
+            return listProductResponse;
+        }
+        
     }
 }

@@ -16,5 +16,9 @@ namespace beSS.Services
         MessageResponse CreateBill(CreateBillRequest request);
         MessageResponse DeleteBill(Guid id);
         MessageResponse ConFirmBill(Guid id);
+        RevenueResponse CalculatorRevenue();
+        RevenueMonth GetRevenueMonth(int Month, int Year);
+        RatioResponse GetRatioRevenue(int Year);
+        List<int> ListYear();
     }
 }

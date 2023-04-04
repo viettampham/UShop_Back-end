@@ -41,6 +41,7 @@ namespace beSS
             services.AddScoped<IBillService, BillService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITypeProductService, TypeProductService>();
             
             
             services.AddIdentity<ApplicationUser, ApplicationRole>()

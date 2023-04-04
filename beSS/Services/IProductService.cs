@@ -17,5 +17,6 @@ namespace beSS.Services
         MessageResponse DeleteProduct(Guid id);
         List<ProductResponse> SearchProduct(string request);
         Task<ProductResponse> Update(EditProduct request);
+        List<ProductResponse> GetProductByType(Guid TypeID);
     }
 }

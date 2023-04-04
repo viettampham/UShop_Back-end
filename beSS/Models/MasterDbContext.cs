@@ -12,6 +12,7 @@ namespace beSS.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Bill> Bills { get; set; }
+        public DbSet<TypeProduct> TypeProducts { get; set; }
         
 
         public MasterDbContext(DbContextOptions<MasterDbContext> options) : base(options)

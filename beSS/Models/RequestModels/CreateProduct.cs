@@ -12,6 +12,7 @@ namespace beSS.Models.RequestModels
         public int Price { get; set; }
         public string Size { get; set; }
         public string Brand { get; set; }
+        public Guid TypeProductID { get; set; }
 
         public List<Guid> CategoryIDs { get; set; }
     }

@@ -249,6 +249,12 @@ namespace beSS.Migrations
                     b.Property<Guid?>("ApplicationUserId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("FullNameUser")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsPayed")
                         .HasColumnType("boolean");
 
@@ -336,6 +342,9 @@ namespace beSS.Migrations
                     b.Property<List<Guid>>("CategoryIDs")
                         .HasColumnType("uuid[]");
 
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -354,9 +363,31 @@ namespace beSS.Migrations
                     b.Property<string>("Size")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("TypeProductID")
+                        .HasColumnType("uuid");
+
                     b.HasKey("ProductID");
 
+                    b.HasIndex("TypeProductID");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("beSS.Models.TypeProduct", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<List<Guid>>("ProductIDs")
+                        .HasColumnType("uuid[]");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("TypeProducts");
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>
@@ -445,6 +476,17 @@ namespace beSS.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("beSS.Models.Product", b =>
+                {
+                    b.HasOne("beSS.Models.TypeProduct", "TypeProduct")
+                        .WithMany("Products")
+                        .HasForeignKey("TypeProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TypeProduct");
+                });
+
             modelBuilder.Entity("beSS.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Bills");
@@ -453,6 +495,11 @@ namespace beSS.Migrations
             modelBuilder.Entity("beSS.Models.Bill", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("beSS.Models.TypeProduct", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

@@ -24,6 +24,13 @@ namespace beSS.Controllers
             return Ok(listProduct);
         }
         
+        [HttpGet("get-product-by-type/{id}")]
+        public IActionResult GetProductByType(Guid id)
+        {
+            var listProduct = _productService.GetProductByType(id);
+            return Ok(listProduct);
+        }
+        
         [HttpGet("get-product-by-category-id/{id}")]
         public IActionResult GetProductBuCategoryID(Guid id)
         {

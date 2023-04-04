@@ -63,5 +63,26 @@ namespace beSS.Controllers
         {
             return Ok(_billService.GetBillById(id));
         }
+        
+        [HttpGet("get-revenue")]
+        public IActionResult CalRevenue()
+        {
+            return Ok(_billService.CalculatorRevenue());
+        }
+        [HttpGet("get-revenue-month/{Month},{Year}")]
+        public IActionResult RevenueMonth(int Month, int Year)
+        {
+            return Ok(_billService.GetRevenueMonth(Month,Year));
+        }
+        [HttpGet("get-ratio/{Year}")]
+        public IActionResult Ratio(int Year)
+        {
+            return Ok(_billService.GetRatioRevenue(Year));
+        }
+        [HttpGet("get-list-year")]
+        public IActionResult GetListYear()
+        {
+            return Ok(_billService.ListYear());
+        }
     }
 }

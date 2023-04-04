@@ -7,6 +7,7 @@ namespace beSS.Models.ViewModels
     {
         public Guid ProductID { get; set; }
         public string Name { get; set; }
+        public string DateAdded { get; set; }
         public string Description { get; set; }
         public string ImageURL { get; set; }
         public int QuantityAvailable { get; set; }
@@ -15,7 +16,8 @@ namespace beSS.Models.ViewModels
         public string Size { get; set; }
         public string Brand { get; set; }
         public List<Guid> CategoryIDs { get; set; }
-
+        public string TypeProduct { get; set; }
+        public Guid TypeProductID { get; set; }
         public List<Category> Categorys { get; set; }
     }
 }

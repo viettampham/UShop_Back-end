@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace beSS.Migrations
 {
-    public partial class initDBX : Migration
+    public partial class mainDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<List<Guid>>(
-                name: "ProductIDs",
+            migrationBuilder.AddColumn<string>(
+                name: "FullNameUser",
                 table: "Bills",
-                type: "uuid[]",
+                type: "text",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ProductIDs",
+                name: "FullNameUser",
                 table: "Bills");
         }
     }

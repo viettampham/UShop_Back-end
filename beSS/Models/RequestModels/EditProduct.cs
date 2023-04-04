@@ -15,5 +15,6 @@ namespace beSS.Models.RequestModels
         public string Brand { get; set; }
 
         public List<Guid> CategorieIDs { get; set; }
+        public Guid TypeID { get; set; }
     }
 }
